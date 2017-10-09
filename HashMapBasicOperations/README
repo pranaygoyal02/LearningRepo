@@ -1,0 +1,97 @@
+Read Me :
+
+Two Threads can never execute simultinateously.
+So in a single CPU  machine , even if you write multiple threads,  you would never see errors since two threads never run simultaneously.
+
+MultiThreading vs Multitasking  :
+
+MultiThreading means multiple threads of execution within a same program.A thread of execution can be thought of as a CPU executing the program.When you have multiple threads executing the same program, it is like having multiple CPUs execute within the same program.
+
+
+Multitasking means computers can run multiple tasks at the same time . It isnt at the same time though. A Single CPU was shared between programs. The Operating system would switch between tasks executing each of them for a little before switching.
+
+
+The Reason Why MultiThreading came was for :
+The CPU can do other tasks while waiting for the Network or disk IO.
+
+
+Different Models  :
+
+
+1) parallel worker model.
+
+Incoming jobs are assigned to different workers.
+
+java.util.concurrent java package :
+
+The parallel worker concurrency model is the most commonly used concurrency model in Java applications (although that is changing).
+Many of the concurrency utilities in the java.util.concurrent Java package are designed for use with this model.
+ You can also see traces of this model in the design of the Java Enterprise Edition application servers.
+ The advantage of the parallel worker concurrency model is that it is easy to understand. To increase the parallelization of the application you just add more workers.
+
+
+ Parallel Workers Disadvantages :
+
+
+1) Shared State Can Get Complex
+ This may lead to contention on these shared data structures.
+
+ Modern non-blocking concurrency algorithms may decrease contention and increase performance, but non-blocking algorithms are hard to implement.
+
+ Persistent Data Structures :
+ Persistent data structures are another alternative.
+ A persistent data structure always preserves the previous version of itself when modified.
+ Thus, if multiple threads point to the same persistent data structure and one thread modifies it, the modifying thread gets a reference to the new structure. All other threads keep a reference to the old structure which is still unchanged and thus consistent.
+ The Scala programming contains several persistent data structures.
+
+
+ While persistent data structures are an elegant solution to concurrent modification of shared data structures, persistent data structures tend not to perform that well.
+
+
+2)  Stateless Workers
+
+ Shared state can be modified by other threads in the system. Therefore workers must re-read the state every time it needs it, to make sure it is working on the latest copy. This is true no matter whether the shared state is kept in memory or in an external database. A worker that does not keep state internally (but re-reads it every time it is needed) is called stateless .
+
+ Re-reading data every time you need it can get slow. Especially if the state is stored in an external database.
+
+ Job Ordering is Nondeterministic
+
+ Another disadvantage of the parallel worker model is that the job execution order is nondeterministic. There is no way to guarantee which jobs are executed first or last. Job A may be given to a worker before job B, yet job B may be executed before job A.
+
+
+
+assembly line concurrency model :
+
+ Assembly Line :
+Other developers use other names (e.g. reactive systems, or event driven systems) depending on the platform / community.
+Here is a diagram illustrating the assembly line concurrency model:
+
+Delegator--> Worker-->Worker--->Worker
+
+
+Each worker is running in its own thread, and shares no state with other workers. This is also sometimes referred to as a shared nothing concurrency model.
+
+Systems using an assembly line concurrency model are also sometimes called reactive systems, or event driven systems. The system's workers react to events occurring in the system, either received from the outside world or emitted by other workers. Examples of events could be an incoming HTTP request, or that a certain file finished loading into memory etc.
+
+At the time of writing, there are a number of interesting reactive / event driven platforms available, and more will come in the future. Some of the more popular ones seems to be:
+
+Vert.x
+Akka
+Node.JS (JavaScript)
+
+Actor vs Channels  :
+
+In the actor model each worker is called an actor. Actors can send messages directly to each other.
+Messages are sent and processed asynchronously. Actors can be used to implement one or more job processing assembly lines, as described earlier. Here is a diagram illustrating the actor model:
+
+The assembly line concurrency model implemented using actors.
+In the channel model, workers do not communicate directly with each other.
+Instead they publish their messages (events) on different channels.
+Other workers can then listen for messages on these channels without the sender knowing who is listening.
+Here is a diagram illustrating the channel model:
+
+
+
+
+
+
